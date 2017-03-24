@@ -16,7 +16,14 @@
 #include <DbgTraceLevel.h>
 #include <DbgPrintConsole.h>
 #include <DbgTraceOut.h>
+#ifdef ESP8266
+extern "C"
+{
+  #include "user_interface.h"
+}
+#else
 #include <RamUtils.h>
+#endif
 #include <AppDebug.h>
 
 //-----------------------------------------------------------------------------
@@ -74,12 +81,6 @@ void setupDebugEnv()
   // Free Heap Logger
   //-----------------------------------------------------------------------------
   new Timer(new FreeHeapLogTimerAdapter(), Timer::IS_RECURRING, c_freeHeapLogIntervalMillis);
-
-  Serial.println();
-  Serial.println("---------------------------------------------");
-  Serial.println("Hello from Wiring Controller!");
-  Serial.println("---------------------------------------------");
-  Serial.println();
 }
 
 void dbgCliExecute()
