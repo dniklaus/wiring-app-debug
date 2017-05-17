@@ -42,11 +42,13 @@ public:
 
   void timeExpired()
   {
+    int freeHeap = 0;
 #ifdef ESP8266
-    TR_PRINT_LONG(m_trPort, DbgTrace_Level::debug, system_get_free_heap_size());
+    freeHeap = system_get_free_heap_size();
 #else
-    TR_PRINT_LONG(m_trPort, DbgTrace_Level::debug, RamUtils::getFreeRam());
+    freeHeap = RamUtils::getFreeRam();
 #endif
+    TR_PRINTF(m_trPort, DbgTrace_Level::debug, "%d bytes free", freeHeap);
   }
 };
 
