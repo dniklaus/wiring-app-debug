@@ -56,12 +56,14 @@ public:
 
 extern SerialCommand* sCmd;
 
+const unsigned long int baudRate = 9600;
+
 void setupDebugEnv()
 {
   //-----------------------------------------------------------------------------
   // Serial Command Object for Debug CLI
   //-----------------------------------------------------------------------------
-  Serial.begin(115200);
+  Serial.begin(baudRate);
   sCmd = new SerialCommand();
   DbgCli_Node::AssignRootNode(new DbgCli_Topic(0, "dbg", "Wiring Controller Debug CLI Root Node."));
 
