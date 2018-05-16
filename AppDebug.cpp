@@ -27,6 +27,14 @@ extern "C"
 #include <AppDebug.h>
 
 //-----------------------------------------------------------------------------
+// HW Serial1 available?
+//-----------------------------------------------------------------------------
+#if defined(__AVR_ATmega328P__)  // Arduino UNO, NANO have no HW Serial1
+#else
+  #define HW_Serial1_available
+#endif
+
+//-----------------------------------------------------------------------------
 // Free Heap Logger
 //-----------------------------------------------------------------------------
 const unsigned long c_freeHeapLogIntervalMillis = 10000;
@@ -64,10 +72,9 @@ public:
   virtual void print(const char* str)
   {
 #ifdef ARDUINO
-    if (Serial1)
-    {
-      Serial1.println(str);
-    }
+  #if defined(HW_Serial1_available)
+    Serial1.println(str);
+  #endif
 #else
     printf("%s\n", str);
 #endif
@@ -80,10 +87,9 @@ void setupDebugEnv()
   // Serial Command Object for Debug CLI
   //-----------------------------------------------------------------------------
   Serial.begin(baudRate);
-  if (Serial1)
-  {
-    Serial1.begin(baudRate);
-  }
+#if defined(HW_Serial1_available)
+  Serial1.begin(baudRate);
+#endif
   sCmd = new SerialCommand();
   DbgCli_Node::AssignRootNode(new DbgCli_Topic(0, "dbg", "Wiring Controller Debug CLI Root Node."));
 
@@ -100,10 +106,9 @@ void setupDebugEnv()
   //---------------------------------------------------------------------------
   new DbgTrace_Context(new DbgCli_Topic(DbgCli_Node::RootNode(), "tr", "Modify debug trace"));
   new DbgTrace_Out(DbgTrace_Context::getContext(), "trConOut", new DbgPrint_Console());
-  if (Serial1)
-  {
-    new DbgTrace_Out(DbgTrace_Context::getContext(), "trConOut1", new DbgPrint_Console1());
-  }
+#if defined(HW_Serial1_available)
+  new DbgTrace_Out(DbgTrace_Context::getContext(), "trConOut1", new DbgPrint_Console1());
+#endif
 
   //-----------------------------------------------------------------------------
   // Free Heap Logger
