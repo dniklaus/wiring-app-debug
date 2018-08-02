@@ -58,32 +58,12 @@ extern SerialCommand* sCmd;
 
 const unsigned long int baudRate = 9600;
 
-class DbgPrint_Console1 : public DbgPrint_Console
-{
-public:
-  virtual void print(const char* str)
-  {
-#ifdef ARDUINO
-    if (Serial1)
-    {
-      Serial1.println(str);
-    }
-#else
-    printf("%s\n", str);
-#endif
-  }
-};
-
 void setupDebugEnv()
 {
   //-----------------------------------------------------------------------------
   // Serial Command Object for Debug CLI
   //-----------------------------------------------------------------------------
   Serial.begin(baudRate);
-  if (Serial1)
-  {
-    Serial1.begin(baudRate);
-  }
   sCmd = new SerialCommand();
   DbgCli_Node::AssignRootNode(new DbgCli_Topic(0, "dbg", "Wiring Controller Debug CLI Root Node."));
 
@@ -100,10 +80,6 @@ void setupDebugEnv()
   //---------------------------------------------------------------------------
   new DbgTrace_Context(new DbgCli_Topic(DbgCli_Node::RootNode(), "tr", "Modify debug trace"));
   new DbgTrace_Out(DbgTrace_Context::getContext(), "trConOut", new DbgPrint_Console());
-  if (Serial1)
-  {
-    new DbgTrace_Out(DbgTrace_Context::getContext(), "trConOut1", new DbgPrint_Console1());
-  }
 
   //-----------------------------------------------------------------------------
   // Free Heap Logger
