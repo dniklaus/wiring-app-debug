@@ -16,11 +16,13 @@
 #include <DbgTraceLevel.h>
 #include <DbgPrintConsole.h>
 #include <DbgTraceOut.h>
-#ifdef ESP8266
+#if defined(ESP8266)
 extern "C"
 {
   #include "user_interface.h"
 }
+#elif defined(ESP32)
+  #include "Esp.h"
 #else
 #include <RamUtils.h>
 #endif
@@ -43,8 +45,10 @@ public:
   void timeExpired()
   {
     int freeHeap = 0;
-#ifdef ESP8266
+#if defined(ESP8266)
     freeHeap = system_get_free_heap_size();
+#elif defined(ESP32)
+    freeHeap = ESP.getFreeHeap();
 #else
     freeHeap = RamUtils::getFreeRam();
 #endif
