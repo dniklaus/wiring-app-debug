@@ -6,7 +6,7 @@
  */
 
 #include <Arduino.h>
-#include <Timer.h>
+#include <SpinTimer.h>
 #include <SerialCommand.h>
 #include <DbgCliNode.h>
 #include <DbgCliTopic.h>
@@ -33,7 +33,7 @@ extern "C"
 //-----------------------------------------------------------------------------
 const unsigned long c_freeHeapLogIntervalMillis = 10000;
 
-class FreeHeapLogTimerAdapter : public TimerAdapter
+class FreeHeapLogTimerAdapter : public SpinTimerAdapter
 {
 private:
   DbgTrace_Port* m_trPort;
@@ -88,7 +88,7 @@ void setupDebugEnv()
   //-----------------------------------------------------------------------------
   // Free Heap Logger
   //-----------------------------------------------------------------------------
-  new Timer(new FreeHeapLogTimerAdapter(), Timer::IS_RECURRING, c_freeHeapLogIntervalMillis);
+  new SpinTimer(new FreeHeapLogTimerAdapter(), SpinTimer::IS_RECURRING, c_freeHeapLogIntervalMillis);
 }
 
 void dbgCliExecute()
