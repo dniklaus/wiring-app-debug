@@ -33,12 +33,12 @@ extern "C"
 //-----------------------------------------------------------------------------
 const unsigned long c_freeHeapLogIntervalMillis = 10000;
 
-class FreeHeapLogTimerAdapter : public SpinTimerAdapter
+class FreeHeapLogTimerAction : public SpinTimerAction
 {
 private:
   DbgTrace_Port* m_trPort;
 public:
-  FreeHeapLogTimerAdapter()
+  FreeHeapLogTimerAction()
   : m_trPort(new DbgTrace_Port("heap", DbgTrace_Level::info))
   { }
 
@@ -88,7 +88,7 @@ void setupDebugEnv()
   //-----------------------------------------------------------------------------
   // Free Heap Logger
   //-----------------------------------------------------------------------------
-  new SpinTimer(new FreeHeapLogTimerAdapter(), SpinTimer::IS_RECURRING, c_freeHeapLogIntervalMillis);
+  new SpinTimer(c_freeHeapLogIntervalMillis, new FreeHeapLogTimerAction, SpinTimer::IS_RECURRING, SpinTimer::IS_AUTOSTART);
 }
 
 void dbgCliExecute()
