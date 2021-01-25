@@ -69,7 +69,7 @@ void setupDebugEnv()
   //-----------------------------------------------------------------------------
   Serial.begin(baudRate);
   sCmd = new SerialCommand();
-  DbgCli_Node::AssignRootNode(new DbgCli_Topic(0, "dbg", "Wiring Controller Debug CLI Root Node."));
+  DbgCli_Node::AssignRootNode(new DbgCli_Topic(0, "dbg", "Debug CLI Root Node."));
 
   // Setup callbacks for SerialCommand commands
   if (0 != sCmd)
