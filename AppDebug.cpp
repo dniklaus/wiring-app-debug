@@ -62,13 +62,13 @@ extern SerialCommand* sCmd;
 
 const unsigned long int baudRate = 9600;
 
-void setupDebugEnv()
+void setupDebugEnv(char termChar /* = '\n' */)
 {
   //-----------------------------------------------------------------------------
   // Serial Command Object for Debug CLI
   //-----------------------------------------------------------------------------
   Serial.begin(baudRate);
-  sCmd = new SerialCommand();
+  sCmd = new SerialCommand(termChar);
   DbgCli_Node::AssignRootNode(new DbgCli_Topic(0, "dbg", "Debug CLI Root Node."));
 
   // Setup callbacks for SerialCommand commands

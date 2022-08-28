@@ -8,7 +8,7 @@
 #ifndef LIB_APP_DEBUG_APPDEBUG_H_
 #define LIB_APP_DEBUG_APPDEBUG_H_
 
-void setupDebugEnv();
+void setupDebugEnv(char termChar = '\n');
 void dbgCliExecute();
 void sayHello();
 void unrecognized(const char *command);
