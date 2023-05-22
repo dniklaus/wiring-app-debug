@@ -8,9 +8,23 @@
 #ifndef LIB_APP_DEBUG_APPDEBUG_H_
 #define LIB_APP_DEBUG_APPDEBUG_H_
 
-void setupDebugEnv();
-void dbgCliExecute();
-void sayHello();
-void unrecognized(const char *command);
+class SerialCommand;
+
+class AppDebug
+{
+public:
+  AppDebug(SerialCommand* sCmd);
+  virtual ~AppDebug();
+
+  void setupDebugEnv();
+
+private:
+  static void dbgCliExecute();
+  static void sayHello();
+  static void unrecognized(const char *command);
+
+private:
+  static SerialCommand* m_sCmd;
+};
 
 #endif /* LIB_APP_DEBUG_APPDEBUG_H_ */
