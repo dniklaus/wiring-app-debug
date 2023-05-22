@@ -58,25 +58,31 @@ public:
 
 //-----------------------------------------------------------------------------
 
-extern SerialCommand* sCmd;
-
 const unsigned long int baudRate = 9600;
+SerialCommand* AppDebug::m_sCmd = 0;
 
-void setupDebugEnv(char termChar /* = '\n' */)
+AppDebug::AppDebug(SerialCommand* sCmd)
+{ 
+  m_sCmd = sCmd;
+}
+
+AppDebug::~AppDebug()
+{ }
+
+void AppDebug::setupDebugEnv()
 {
   //-----------------------------------------------------------------------------
   // Serial Command Object for Debug CLI
   //-----------------------------------------------------------------------------
   Serial.begin(baudRate);
-  sCmd = new SerialCommand(termChar);
   DbgCli_Node::AssignRootNode(new DbgCli_Topic(0, "dbg", "Debug CLI Root Node."));
 
   // Setup callbacks for SerialCommand commands
-  if (0 != sCmd)
+  if (0 != m_sCmd)
   {
-    sCmd->addCommand("dbg", dbgCliExecute);
-    sCmd->addCommand("hello", sayHello);        // Echos the string argument back
-    sCmd->setDefaultHandler(unrecognized);      // Handler for command that isn't matched  (says "What?")
+    m_sCmd->addCommand("dbg", AppDebug::dbgCliExecute);
+    m_sCmd->addCommand("hello", AppDebug::sayHello);        // Echos the string argument back
+    m_sCmd->setDefaultHandler(AppDebug::unrecognized);      // Handler for command that isn't matched  (says "What?")
   }
 
   //---------------------------------------------------------------------------
@@ -91,9 +97,9 @@ void setupDebugEnv(char termChar /* = '\n' */)
   new SpinTimer(c_freeHeapLogIntervalMillis, new FreeHeapLogTimerAction, SpinTimer::IS_RECURRING, SpinTimer::IS_AUTOSTART);
 }
 
-void dbgCliExecute()
+void AppDebug::dbgCliExecute()
 {
-  if ((0 != sCmd) && (0 != DbgCli_Node::RootNode()))
+  if ((0 != m_sCmd) && (0 != DbgCli_Node::RootNode()))
   {
     const unsigned int firstArgToHandle = 1;
     const unsigned int maxArgCnt = 10;
@@ -103,19 +109,19 @@ void dbgCliExecute()
     while ((maxArgCnt > arg_cnt) && (0 != arg))
     {
       args[arg_cnt] = arg;
-      arg = sCmd->next();
+      arg = m_sCmd->next();
       arg_cnt++;
     }
     DbgCli_Node::RootNode()->execute(static_cast<unsigned int>(arg_cnt), const_cast<const char**>(args), firstArgToHandle);
   }
 }
 
-void sayHello()
+void AppDebug::sayHello()
 {
   char *arg;
-  if (0 != sCmd)
+  if (0 != m_sCmd)
   {
-    arg = sCmd->next();    // Get the next argument from the SerialCommand object buffer
+    arg = m_sCmd->next();    // Get the next argument from the SerialCommand object buffer
   }
   else
   {
@@ -133,7 +139,7 @@ void sayHello()
 }
 
 // This is the default handler, and gets called when no other command matches.
-void unrecognized(const char *command)
+void AppDebug::unrecognized(const char *command)
 {
   Serial.println("What?");
 }
